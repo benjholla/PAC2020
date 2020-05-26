@@ -1,0 +1,35 @@
+Problem Statement: Find all calls within the app to custom collection type constructors.  Define a custom collection type
+                   to be a class that inherits from java.util.Collection and is defined within the app (your project).
+
+// create some subgraphs of the CALL, CONTAINS, and SUPERTYPE edges
+var containsEdges = universe.edgesTaggedWithAny(XCSG.Contains)
+var callEdges = universe.edgesTaggedWithAny(XCSG.Call)
+var supertypeEdges = universe.edgesTaggedWithAny(XCSG.Supertype)
+
+// define the app to be everything contained in the project "CustomCollection"
+var app = containsEdges.forward(universe.project("CustomCollection"))
+
+// grab a reference to the java.util.Collection class node
+var collectionType = typeSelect("java.util", "Collection")
+
+// find all subtypes (children) of java.util.Collection
+var allCollectionTypes = supertypeEdges.reverse(collectionType)
+
+// find all subtypes of java.util.Collection that were also defined in the app (not in the Java APIs)
+var appCollectionTypes = allCollectionTypes.intersection(app)
+
+// find all the methods, variables, etc declared under the app's custom collection types
+var appCollectionDeclarations = containsEdges.forward(appCollectionTypes)
+
+// pick out all the constructor's from the app collection declarations
+var appCollectionConstructors = appCollectionDeclarations.nodesTaggedWithAny(XCSG.Constructor)
+
+// find app methods that directly call the app collection constructors and discard constructors that are not called by the app
+var appConstructorCalls = callEdges.reverseStep(appCollectionConstructors)
+
+// create a highlighter to color the constructors red
+var h = new Highlighter()
+h.highlight(appCollectionConstructors, java.awt.Color.RED)
+
+// show the app constructor colors with the constructors colored red
+show(appConstructorCalls, h)

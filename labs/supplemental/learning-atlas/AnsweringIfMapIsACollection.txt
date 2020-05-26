@@ -1,0 +1,9 @@
+var mapType = typeSelect("java.util", "Map")
+
+var typeHierarychy = universe.edgesTaggedWithAny(XCSG.Supertype)
+
+// if map is a collection, the Collection type should be between Object and Map in the type hierarchy
+show(typeHierarychy.forward(mapType))
+
+// its not
+show(typeHierarychy.forward(mapType).intersection(typeSelect("java.util","Collection")))
