@@ -1,0 +1,101 @@
+LANGUAGE 0, 0
+#include "minishare.h"
+#include "winuser.h"
+
+MINISHARE_ICON ICON res/minishare_icon1.ico
+MINISHARE_ICON_BUSY ICON res/minishare_icon1_green.ico
+MENU_ABOUT BITMAP res/menu_about.bmp
+MENU_CONFIG BITMAP res/menu_config.bmp
+MENU_COPY BITMAP res/menu_copy.bmp
+MENU_REMOVE BITMAP res/menu_remove.bmp
+MENU_INDEX BITMAP res/menu_index.bmp
+MENU_LOG BITMAP res/menu_log.bmp
+MENU_OPEN BITMAP res/menu_open.bmp
+MENU_DIR BITMAP res/menu_dir.bmp
+MENU_SHOWHIDE BITMAP res/menu_showhide.bmp
+LIST_SEND ICON res/list_send.ico
+LIST_HIDDEN ICON res/list_hidden.ico
+LIST_VISIBLE ICON res/list_visible.ico
+// MENU_CONNECTION BITMAP res/menu_connections.bmp
+LOGO_IMAGE BITMAP res/minishare_logo_v2_256.bmp
+
+#ifdef FINNISH
+#define LANG "res/finnish.inc"
+#endif
+#ifdef ENGLISH
+#define LANG "res/english.inc"
+#endif
+#ifdef DUTCH
+#define LANG "res/dutch.inc"
+#endif
+#ifndef LANG
+#define LANG "res/english.inc"
+#endif
+
+#include LANG
+
+ABOUT_BOX DIALOG 80, 48, 300-4-2, 124
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU|DS_CENTER
+// STYLE WS_POPUP
+
+CAPTION "About"
+FONT 8, "Microsoft Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Got It", 7784, 300-48-1-4-4, 110, 48, 12
+    GROUPBOX        "", 7785, 0, 48+2, 300-4-2, 60-2
+    PUSHBUTTON      MINISHARE_URL, 7786, 4, 111, 160, 11
+    LTEXT           "Copyright (c) 2002-2004 Tero Lindeman <xtmb@kolumbus.fi> -- Released under GPL.\n\nThanks to Mick Jones for the program icon and logo. Big thanks to following people for beta testing: Pekka Järvinen, Antti Paajoki, Petri Muhonen, Tapio Nuutinen, Pasi Ruhanen, people at dasmusik.net and everyone I forgot. Special thanks to bittivuoto.net for misc. support.", 7786, 4, 4+48+3+1, 300-8-4-4, 92-48+2+2
+    CONTROL         "",ABOOT_LOGO,"Static",SS_BITMAP,0,0,85,52 
+END
+
+IP_BOX DIALOG 68, 8, 156, 48+8
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU|DS_CENTER
+CAPTION IP_CONFIG_CAPTION
+FONT 8, "Microsoft Sans Serif"
+BEGIN
+    COMBOBOX        IPCOMBO, 4, 32+8, 100, 35+8, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   OK, IPOK, 112, 32+8, 40, 12
+    LTEXT           IP_CONFIG_INFO, 103, 2, 2, 154, 26+8
+END
+
+EDIT_FILE_BOX DIALOG 68, 8, 180, 48+8
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU|DS_CENTER
+CAPTION EDIT_FILE_BOX_CAPTION
+FONT 8, "Microsoft Sans Serif"
+BEGIN
+	LTEXT			"File:",0,4,6,20,12
+	LTEXT			"URL:",0,4,26,20,12
+	EDITTEXT        EDITPATH,24,4,152,12,ES_AUTOHSCROLL
+	EDITTEXT        EDITURL,24,24,152,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   OK, EDITOK, 92, 32+8, 40, 12
+    PUSHBUTTON      CANCEL, EDITCANCEL, 136, 40, 40, 12
+END
+
+ADD_USER_BOX DIALOG 68, 8, 128, 48+8
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU|DS_CENTER
+CAPTION ADD_USER_BOX_CAPTION
+FONT 8, "Microsoft Sans Serif"
+BEGIN
+	LTEXT			LOGIN_USERNAME,0,4,6,50,12
+	LTEXT			LOGIN_PASSWORD,0,4,26,50,12
+	EDITTEXT        ADDUSERNAME,54,4,70,12,ES_AUTOHSCROLL
+	EDITTEXT        ADDUSERPASS,54,24,70,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   OK, ADDUSEROK, 92-54, 32+8, 40, 12
+    PUSHBUTTON      CANCEL, ADDUSERCANCEL, 136-54, 40, 40, 12
+END
+
+
+EDIT_USER_BOX DIALOG 68, 8, 180, 48+8
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU|DS_CENTER
+CAPTION EDIT_USER_BOX_CAPTION
+FONT 8, "Microsoft Sans Serif"
+BEGIN
+	LTEXT			LOGIN_USERNAME,0,4,6,50,12
+	LTEXT			LOGIN_PASSWORD,0,4,26,50,12
+	COMBOBOX        USEREDITUSER,54,4,120,40,CBS_DROPDOWNLIST|WS_VSCROLL | WS_TABSTOP
+	EDITTEXT        USEREDITPASSWORD,54,24,120,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   MODIFY, USEREDITMODIFY, 4, 32+8, 40, 12
+    PUSHBUTTON   	ADD, USEREDITADD, 48, 32+8, 40, 12
+    PUSHBUTTON   	DELETE, USEREDITDELETE, 48+4+40, 32+8, 40, 12
+    PUSHBUTTON      CLOSE, USEREDITCLOSE, 136, 40, 40, 12
+END
