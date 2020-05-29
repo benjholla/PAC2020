@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
   if (size > 0 && buf[0] == 'h'){
     if (size > 1 && buf[1] == 'a'){
       if (size > 2 && buf[2] == 'c'){
-        if (size > 2 && buf[3] == 'k'){
+        if (size > 3 && buf[3] == 'k'){
           // __builtin_trap(); // uncomment to force a crash at this program point
           printf(buf); // vulnerable to format string attacks!
         }
