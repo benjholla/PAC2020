@@ -10,7 +10,7 @@ import sys
 
 PYTHON3 = sys.version_info.major == 3
 if not PYTHON3:
-  print("Run this script with: 'sudo python3 autopwn.py'")
+  print("Run this script with: 'python3 autopwn.py'")
   sys.exit(-1)
 
 import os
