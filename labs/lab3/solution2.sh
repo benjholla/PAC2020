@@ -11,6 +11,11 @@
 #       the shell. Don't run if you are in the middle of a manual development
 #       experiment since it will change the environment.
 #
+# Note: This script also sets environment variables which affect program offsets
+#       so you should run the script by invoking "source ./solution2.sh" to 
+#       inherit the environment changes to be able to exploit the program
+#       again with the generated exploit file.
+#
 ################################################################################
 
 # assume we are in the lab3 directory
