@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <shlobj.h>
 #include <shellapi.h>
 #include <time.h>
-#include <math.h>
+//#include <math.h> // removed dependency on math.h (which has a build error)
 
 
 int minimized=0,icon_send=0,icon_state[2];
@@ -124,7 +124,9 @@ void updatehostview()
 				if (c.filesize!=-1) {
 					char tmp2[32],speedtmp[64];
 					sizechar(tmp2,c.bytesdownloaded);
-					sizechar(speedtmp,(__int64)trunc((float)c.bytesdownloaded/(((float)time(NULL)-(float)c.sessionstart)+0.001)));
+//					sizechar(speedtmp,(__int64)trunc((float)c.bytesdownloaded/(((float)time(NULL)-(float)c.sessionstart)+0.001)));
+					// utilize cast for truncate
+					sizechar(speedtmp,(__int64)(float)c.bytesdownloaded/(((float)time(NULL)-(float)c.sessionstart)+0.001));
 					strcat(speedtmp,text_sec);
 					sprintf(tmp,"%.1f%% (%s, %s)",((float)c.bytesdownloaded)/((float)c.range_end-(float)c.range_start)*100,tmp2,speedtmp);
 				} else {
