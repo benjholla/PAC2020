@@ -1,42 +1,23 @@
 import com.ensoftcorp.open.commons.utilities._
-import com.ensoftcorp.open.c.commons.analysis.CommonQueries._
 
-var strcpy = functions("strcpy")
-var strlen = functions("strlen")
+var strcpy = universe.nodes(XCSG.Function).selectNode(XCSG.name, "strcpy")
+var strlen = universe.nodes(XCSG.Function).selectNode(XCSG.name, "strlen")
 var callEdges = edges(XCSG.Call)
 var strcpyCallers = callEdges.predecessors(strcpy)
 var strlenCallers = callEdges.predecessors(strlen)
 
-show(strcpyCallers.intersection(strlenCallers), "Callers of strcpy and strlen")
-show(strcpyCallers.difference(strlenCallers), "Callers of strcpy and not strlen")
-
-var arrayTypes = nodes(XCSG.ArrayType)
-var typeOfEdges = nodes(XCSG.TypeOf)
-var arrays = typeEdges.predecessors(arrayTypes)
-
-show(arrays.nodes(XCSG.Initialization), "Initialized Arrays")
-
-var arrayStructTypes = arrays.containers().nodes(XCSG.C.Struct)
-var typeDefEdges = edges(XCSG.AliasedType, XCSG.TypeOf)
-var typeAliases = nodes(XCSG.TypeAlias)
-var arrayStructs = typeDefEdges.reverse(arrayStructTypes).difference(arrayStructTypes, typeAliases)
-
-show(arrayStructs.nodes(XCSG.Initialization), "Initialized Structures Containing Arrays")
-
-var buffers = arrays.union(arrayStructs)
-
 var sockets = nodes(XCSG.Field).selectNode(XCSG.name, "socket")
 var taint = universe.edgesTaggedWithAny("control-dependence", "data-dependence")
-var bufferStatements = buffers.containers().nodes(XCSG.ControlFlow_Node)
-var taintedBufferStatements = taint.forward(sockets).intersection(bufferStatements)
+var tainted = taint.forward(sockets)
 
-show(taintedBufferStatements, "Tainted Buffer Statements")
+var arrayWrites = nodes(XCSG.ArrayWrite)
+var taintedArrayWrites = tainted.intersection(arrayWrites.containers())
+show(taintedArrayWrites, "Tainted array writes")
 
 var invocationEdges = edges(XCSG.InvokedFunction)
 var strcpyCallsites = invocationEdges.predecessors(strcpy)
 var strcpyCallsiteStatements = strcpyCallsites.containers().nodes(XCSG.ControlFlow_Node)
-var taintedStrcpyCallsites = taintedBufferStatements.intersection(strcpyCallsiteStatements)
-
+var taintedStrcpyCallsites = tainted.intersection(strcpyCallsiteStatements)
 show(taintedStrcpyCallsites, "Tainted strcpy Callsites")
 
 var taintedStrcpyCallsiteFunctions = taintedStrcpyCallsites.containers().nodes(XCSG.Function)
