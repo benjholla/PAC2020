@@ -2,27 +2,27 @@
 Program Analysis for Cybersecurity (PAC) Course Materials
 
 ## Lab Virtual Machines
-The username and password of both the HackingLive and PAC2021 VM is `pac`:`badpass`.
+The username and password of both the HackingLive and PAC2023 VM is `pac`:`badpass`.
 
 Malware samples are password protected as zip files with the password: `infected`.
 
-Both virtual machines are playable in VirtualBox version 6.1, which is freely available
+Both virtual machines are playable in VirtualBox version 7.0, which is freely available
 for Windows, Linux, and Mac at: https://www.virtualbox.org/wiki/Downloads.
 
-The HackingLive.ova is known NOT to work with VMWare products, however the PAC2021.ova
+The HackingLive.ova is known NOT to work with VMWare products, however the PAC2023.ova
 MAY work with VMWare (although it has not been officially tested). It is recommended
 to use VirtualBox to import these VMs.
 
 ```
-HackingLive.ova
+HackingLive.ova (https://drive.google.com/file/d/1NKbmchgGbiRg0Rno9j0kZxfdZy0dj4B-/view)
 MD5: B9AA4276BD3F0D139139D48EE1F01D16
 SHA-1: 49FFB835F27958DA89BC1EECDA317980FFA6597A
 
-PAC2021.ova
-MD5: AAACB443A69EC8D56F71F71AAD10A87A
-SHA-1: F57F7322E86A94A68E1FEDDD76517DA4B2DD4556
+PAC2023.ova (https://drive.google.com/file/d/1xjzOdjCZLxxrfTNnw7c3mtpf2k4XeNhF/view)
+MD5: 37DF63954E77C4408454D5A47CB51085
+SHA-1: 33F317F7BF0C309043887CF5D035F2973965CE7C
 
-en_windows_xp_professional_with_service_pack_3_x86.iso
+en_windows_xp_professional_with_service_pack_3_x86.iso (https://drive.google.com/file/d/1Ptmy2_X_HtC9YZ_WRKLlmlol_E3TxzUn/view)
 MD5: F424A52153E6E5ED4C0D44235CF545D5
 SHA-1: 1C735B38931BF57FB14EBD9A9BA253CEB443D459
 ```
