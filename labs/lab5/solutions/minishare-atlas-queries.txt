@@ -1,8 +1,12 @@
-// import some utilities
-// assumes Atlas has the C Toolbox Commons installed 
-// https://ensoftcorp.github.io/c-toolbox-commons
+// import some utilities, assumes Toolbox Commons, Toolbox Commons C, 
+// and Slicing Toolbox are installed and active on the shell
+// add Toolbox Commons utilities (FormattedSourceCorrespondence)
+// add Toolbox Commons utilities for C/C++ programs
+// add edge definitions for slicing/taint analysis
 import com.ensoftcorp.open.commons.utilities._
 import com.ensoftcorp.open.c.commons.analysis.CommonQueries._
+import com.ensoftcorp.open.slice.analysis.ControlDependenceGraph
+import com.ensoftcorp.open.slice.analysis.DataDependenceGraph
 
 // get callers of strcpy and strlen
 var strcpy = functions("strcpy")
@@ -12,55 +16,35 @@ var strcpyCallers = callEdges.predecessors(strcpy)
 var strlenCallers = callEdges.predecessors(strlen)
 
 // show a rough guess of where vulnerable functions might be
-show(strcpyCallers.intersection(strlenCallers), "Callers of strcpy and strlen")
-show(strcpyCallers.difference(strlenCallers), "Callers of strcpy and not strlen")
+show(strcpyCallers.intersection(strlenCallers), "Callers of strcpy and strlen, guessing secure")
+show(strcpyCallers.difference(strlenCallers), "Callers of strcpy and not strlen, guessing insecure")
 
-// select all array variables (variables have a TypeOf edge from an ArrayType)
-var arrayTypes = nodes(XCSG.ArrayType)
-var typeOfEdges = nodes(XCSG.TypeOf)
-var arrays = typeEdges.predecessors(arrayTypes)
+// create a program dependence graph for taint analysis
+// note assumes "control-dependence" and "data-dependence" edges were added by slicing toolbox
+var taint = universe.edgesTaggedWithAny(ControlDependenceGraph.CONTROL_DEPENDENCE_EDGE, DataDependenceGraph.DATA_DEPENDENCE_EDGE)
 
-// there are 109 arrays initialized in the code
-show(arrays.nodes(XCSG.Initialization), "Initialized Arrays")
-
-// select structures that contain arrays
-var arrayStructTypes = arrays.containers().nodes(XCSG.C.Struct)
-var typeDefEdges = edges(XCSG.AliasedType, XCSG.TypeOf)
-var typeAliases = nodes(XCSG.TypeAlias)
-var arrayStructs = typeDefEdges.reverse(arrayStructTypes).difference(arrayStructTypes, typeAliases)
-
-// there are 7 structures containing arrays initialized in the code
-show(arrayStructs.nodes(XCSG.Initialization), "Initialized Structures Containing Arrays")
-
-// buffers are arrays and structures containing arrays
-var buffers = arrays.union(arrayStructs)
-
-// find buffers that are tainted by attacker controlled inputs (the network socket)
+// assume attacker controlled inputs stem from the network socket
+// find direct buffer writes that are tainted
 var sockets = nodes(XCSG.Field).selectNode(XCSG.name, "socket")
-var taint = universe.edgesTaggedWithAny("control-dependence", "data-dependence")
-var bufferStatements = buffers.containers().nodes(XCSG.ControlFlow_Node)
-var taintedBufferStatements = taint.forward(sockets).intersection(bufferStatements)
+var tainted = taint.forward(sockets)
+var arrayWrites = nodes(XCSG.ArrayWrite)
+var taintedArrayWrites = tainted.intersection(arrayWrites.containers())
+show(taintedArrayWrites, "Tainted array writes")
 
-// there are 87 tainted buffer statements
-show(taintedBufferStatements, "Tainted Buffer Statements")
-
-// find strcpy callsites that take tainted buffers
+// consider tainted indirect buffer writes occuring in stdlib, specifically strcpy
 var invocationEdges = edges(XCSG.InvokedFunction)
 var strcpyCallsites = invocationEdges.predecessors(strcpy)
 var strcpyCallsiteStatements = strcpyCallsites.containers().nodes(XCSG.ControlFlow_Node)
-var taintedStrcpyCallsites = taintedBufferStatements.intersection(strcpyCallsiteStatements)
-
-// there are 17 tainted strcpy callsites
+var taintedStrcpyCallsites = tainted.intersection(strcpyCallsiteStatements)
 show(taintedStrcpyCallsites, "Tainted strcpy Callsites")
 
-// find functions with tainted strcpy callsites that do not call strlen
+// filter strcpy callsites by functions that do not call strlen
 var taintedStrcpyCallsiteFunctions = taintedStrcpyCallsites.containers().nodes(XCSG.Function)
 var potentiallyVulnerableFunctions = taintedStrcpyCallsiteFunctions.difference(strlenCallers)
-show(potentiallyVulnerableFunctions, "Potentially Vulnerable Functions")
+show(potentiallyVulnerableFunctions, "Potentially Vulnerable App Functions")
 
-// filter the tainted strcpy callsites to just the callsites in the potentially vulnerable function, there should only be 1 function left
+// show and print the line number of the potentially vulnerable functions
+// note: Filename: minishare\serve2.c (line 229) is a true postitive
 var taintedStrcpyCallsitesInPotentiallyVulnerableFunctions = taintedStrcpyCallsites.intersection(potentiallyVulnerableFunctions.contained().nodes(XCSG.ControlFlow_Node))
-show(taintedStrcpyCallsitesInPotentiallyVulnerableFunctions, "Potentially Vulnerable strcpy")
-
-// print the line number of the potential vulnerability ([Filename: minishare\serve2.c (line 229)])
+show(taintedStrcpyCallsitesInPotentiallyVulnerableFunctions, "Potentially Vulnerable strcpy Callsite")
 println(FormattedSourceCorrespondence.getSourceCorrespondents(taintedStrcpyCallsitesInPotentiallyVulnerableFunctions))

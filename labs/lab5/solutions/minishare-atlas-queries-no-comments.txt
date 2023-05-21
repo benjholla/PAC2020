@@ -1,4 +1,7 @@
 import com.ensoftcorp.open.commons.utilities._
+import com.ensoftcorp.open.c.commons.analysis.CommonQueries._
+import com.ensoftcorp.open.slice.analysis.ControlDependenceGraph
+import com.ensoftcorp.open.slice.analysis.DataDependenceGraph
 
 var strcpy = universe.nodes(XCSG.Function).selectNode(XCSG.name, "strcpy")
 var strlen = universe.nodes(XCSG.Function).selectNode(XCSG.name, "strlen")
@@ -6,10 +9,13 @@ var callEdges = edges(XCSG.Call)
 var strcpyCallers = callEdges.predecessors(strcpy)
 var strlenCallers = callEdges.predecessors(strlen)
 
-var sockets = nodes(XCSG.Field).selectNode(XCSG.name, "socket")
-var taint = universe.edgesTaggedWithAny("control-dependence", "data-dependence")
-var tainted = taint.forward(sockets)
+show(strcpyCallers.intersection(strlenCallers), "Callers of strcpy and strlen, guessing secure")
+show(strcpyCallers.difference(strlenCallers), "Callers of strcpy and not strlen, guessing insecure")
 
+var taint = universe.edgesTaggedWithAny(ControlDependenceGraph.CONTROL_DEPENDENCE_EDGE, DataDependenceGraph.DATA_DEPENDENCE_EDGE)
+
+var sockets = nodes(XCSG.Field).selectNode(XCSG.name, "socket")
+var tainted = taint.forward(sockets)
 var arrayWrites = nodes(XCSG.ArrayWrite)
 var taintedArrayWrites = tainted.intersection(arrayWrites.containers())
 show(taintedArrayWrites, "Tainted array writes")
@@ -22,9 +28,8 @@ show(taintedStrcpyCallsites, "Tainted strcpy Callsites")
 
 var taintedStrcpyCallsiteFunctions = taintedStrcpyCallsites.containers().nodes(XCSG.Function)
 var potentiallyVulnerableFunctions = taintedStrcpyCallsiteFunctions.difference(strlenCallers)
-show(potentiallyVulnerableFunctions, "Potentially Vulnerable Functions")
+show(potentiallyVulnerableFunctions, "Potentially Vulnerable App Functions")
 
 var taintedStrcpyCallsitesInPotentiallyVulnerableFunctions = taintedStrcpyCallsites.intersection(potentiallyVulnerableFunctions.contained().nodes(XCSG.ControlFlow_Node))
-show(taintedStrcpyCallsitesInPotentiallyVulnerableFunctions, "Potentially Vulnerable strcpy")
-
+show(taintedStrcpyCallsitesInPotentiallyVulnerableFunctions, "Potentially Vulnerable strcpy Callsite")
 println(FormattedSourceCorrespondence.getSourceCorrespondents(taintedStrcpyCallsitesInPotentiallyVulnerableFunctions))
