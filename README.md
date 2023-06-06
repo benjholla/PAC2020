@@ -31,7 +31,7 @@ License
 -------------------------------------------------------------------------------
 
 Except where other licenses apply these materials are released under The MIT License.
-See the PAC2021.pdf file for more details.
+See the PAC2023.pdf file for more details.
 
 ## Notes on Building the VM
 
