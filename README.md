@@ -1,15 +1,15 @@
-# PAC2020
+# PAC2020-2024
 Program Analysis for Cybersecurity (PAC) Course Materials
 
 ## Lab Virtual Machines
-The username and password of both the HackingLive and PAC2023 VM is `pac`:`badpass`.
+The username and password of both the HackingLive and PAC2024 VM is `pac`:`badpass`.
 
 Malware samples are password protected as zip files with the password: `infected`.
 
-Both virtual machines are playable in VirtualBox version 7.0, which is freely available
-for Windows, Linux, and Mac at: https://www.virtualbox.org/wiki/Downloads.
+Both virtual machines are playable in VirtualBox versions 6.1 and 7.0, which are freely
+available for Windows, Linux, and Mac at: https://www.virtualbox.org/wiki/Downloads.
 
-The HackingLive.ova is known NOT to work with VMWare products, however the PAC2023.ova
+The HackingLive.ova is known NOT to work with VMWare products, however the PAC2024.ova
 MAY work with VMWare (although it has not been officially tested). It is recommended
 to use VirtualBox to import these VMs.
 
@@ -31,7 +31,7 @@ License
 -------------------------------------------------------------------------------
 
 Except where other licenses apply these materials are released under The MIT License.
-See the PAC2023.pdf file for more details.
+See the PAC2024.pdf file for more details.
 
 ## Notes on Building the VM
 
