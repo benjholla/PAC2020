@@ -6,7 +6,7 @@ The username and password of both the HackingLive and PAC2026 VM is `pac`:`badpa
 
 Malware samples are password protected as zip files with the password: `infected`.
 
-Both virtual machines are playable in VirtualBox versions 7.0, which is freely
+Both virtual machines are playable in VirtualBox versions 7.x, which is freely
 available for Windows, Linux, and Mac at: https://www.virtualbox.org/wiki/Downloads.
 
 The HackingLive.ova is known to NOT work with VMWare products, however the PAC2026.ova
@@ -18,9 +18,9 @@ HackingLive.ova (https://drive.google.com/file/d/10jA-ASbqNxjGaYdC5JFJFcVtL7OvWy
 MD5: B9AA4276BD3F0D139139D48EE1F01D16
 SHA-1: 49FFB835F27958DA89BC1EECDA317980FFA6597A
 
-PAC2026.ova (https://drive.google.com/file/d/1H8SsFk3y91PxOHW5k6TJ9ml575OCBKH0/view)
-MD5: 08548d62f0a61ac1ed618eb2d5b3320e
-SHA-1: 57913b27e33db98f256e34c7f174724d6c91b656
+PAC2026.ova (https://drive.google.com/file/d/1uixIbPqm0zBEu23QFCGO-4PMBjDps8CP/view)
+MD5: 861A739A533598F672792690AB9577B5
+SHA-1: 1C144C6947DAFB7A85F6215CEE8B5AD2E6ECBF4B
 
 en_windows_xp_professional_with_service_pack_3_x86.iso (https://drive.google.com/file/d/1S2cg51Zm5ZT17ERQ5avpWotJToVEpMED/view)
 MD5: F424A52153E6E5ED4C0D44235CF545D5
